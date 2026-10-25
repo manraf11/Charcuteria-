@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>QUESOS Y EMBUTIDOS A&M - Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+    <style>
+        html { -webkit-text-size-adjust: 100%; }
+        body { background: #f8f9fa; }
+        .container-hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        @media (max-width: 575.98px) {
+            .container-hero h1 { font-size: 2rem; }
+        }
+
+        /* ========== INTRO.JS — PREMIUM (v3 con fix de viewport) ========== */
+        .introjs-overlay {
+            background: rgba(0,0,0,0.82) !important;
+            backdrop-filter: blur(4px);
+        }
+        .introjs-helperLayer {
+            border-radius: 12px !important;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.82),
+                        0 0 0 4px rgba(255, 193, 7, 0.75),
+                        0 0 30px rgba(255, 193, 7, 0.5) !important;
+            transition: all 0.25s ease !important;
+        }
+        .introjs-tooltipReferenceLayer { z-index: 9999999 !important; }
+        .introjs-tooltip {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            border-radius: 14px !important;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.45) !important;
+            padding: 0 !important;
+            max-width: 440px !important;
+            min-width: 320px !important;
+            border: none !important;
+            background: #fff !important;
+            overflow: hidden;
+            animation: introFadeIn 0.3s ease-out;
+            position: relative;
+        }
+
+        /* ===== FIX MÓVIL: TOOLTIP COMO MODAL CENTRADO ===== */
+        @media (max-width: 767.98px) {
+            .introjs-tooltip {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                max-width: calc(100vw - 24px) !important;
+                min-width: calc(100vw - 24px) !important;
+                width: calc(100vw - 24px) !important;
+                max-height: calc(100vh - 100px) !important;
+                overflow-y: auto !important;
+                margin: 0 !important;
+                animation: introFadeInMobile 0.3s ease-out;
+            }
+            .introjs-arrow {
+                display: none !important;
+            }
+            .introjs-tooltip-header {
+                position: sticky;
+                top: 0;
+                z-index: 3;
+            }
+            .introjs-tooltipbuttons {
+                position: sticky;
+                bottom: 0;
+                z-index: 3;
+                box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+            }
+            .introjs-tooltiptext {
+                max-height: none !important;
+            }
+        }
+
+        @keyframes introFadeInMobile {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        /* ===== FIN FIX MÓVIL ===== */
+
+        .introjs-tooltip .introjs-skipbutton,
+        .introjs-tooltipbuttons .introjs-skipbutton,
+        .introjs-button.introjs-skipbutton {
+            position: absolute !important;
+            top: 12px !important;
+            right: 12px !important;
+            width: 30px !important;
+            height: 30px !important;
+            min-width: 30px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 50% !important;
+            background: rgba(255,255,255,0.25) !important;
+            color: #fff !important;
+            border: none !important;
+            font-size: 0 !important;
+            line-height: 30px !important;
+            text-align: center !important;
+            cursor: pointer !important;
+            transition: background 0.2s ease, transform 0.2s ease !important;
+            box-shadow: none !important;
+            z-index: 5 !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+        .introjs-tooltip .introjs-skipbutton::before,
+        .introjs-tooltipbuttons .introjs-skipbutton::before,
+        .introjs-button.introjs-skipbutton::before {
+            content: "✕" !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            line-height: 30px !important;
+            display: block;
+        }
+        .introjs-tooltip .introjs-skipbutton:hover,
+        .introjs-tooltipbuttons .introjs-skipbutton:hover,
+        .introjs-button.introjs-skipbutton:hover {
+            background: rgba(255,255,255,0.45) !important;
+            transform: scale(1.1) !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltip .introjs-skipbutton,
+            .introjs-tooltipbuttons .introjs-skipbutton {
+                top: 10px !important;
+                right: 10px !important;
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+                line-height: 28px !important;
+            }
+            .introjs-tooltip .introjs-skipbutton::before,
+            .introjs-tooltipbuttons .introjs-skipbutton::before {
+                font-size: 13px !important;
+                line-height: 28px !important;
+            }
+        }
+
+        .introjs-tooltip-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            padding: 18px 56px 18px 22px !important;
+            border-radius: 14px 14px 0 0 !important;
+            border: none !important;
+        }
+        .introjs-tooltip-title {
+            color: #fff !important;
+            font-weight: 700 !important;
+            font-size: 1.1rem !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            margin: 0 !important;
+            line-height: 1.3 !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltip-header { padding: 16px 50px 16px 18px !important; }
+            .introjs-tooltip-title { font-size: 1rem !important; }
+        }
+
+        .introjs-tooltiptext {
+            padding: 20px 22px 12px 22px !important;
+            font-size: 0.98rem !important;
+            line-height: 1.55 !important;
+            color: #212529 !important;
+            background: #fff !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltiptext {
+                padding: 16px 18px 10px 18px !important;
+                font-size: 0.92rem !important;
+            }
+        }
+        .introjs-tooltiptext strong { color: #0d6efd; font-weight: 700; }
+        .introjs-tooltiptext code {
+            background: #f8f9fa;
+            color: #d63384;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+        }
+
+        .introjs-progress {
+            background: #e9ecef !important;
+            height: 6px !important;
+            margin: 8px 22px 0 22px !important;
+            border-radius: 3px !important;
+            overflow: hidden;
+        }
+        .introjs-progressbar {
+            background: linear-gradient(90deg, #0d6efd 0%, #198754 100%) !important;
+            transition: width 0.3s ease !important;
+            border-radius: 3px !important;
+        }
+
+        .introjs-tooltipbuttons {
+            padding: 14px 22px 18px 22px !important;
+            border-top: 1px solid #f0f0f0 !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            align-items: center !important;
+            gap: 8px;
+            background: #fafbfc !important;
+            flex-wrap: wrap !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltipbuttons {
+                padding: 12px 18px 16px 18px !important;
+                gap: 6px;
+            }
+        }
+
+        .introjs-button {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+            border: none !important;
+            text-shadow: none !important;
+            color: #fff !important;
+            padding: 10px 18px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 0.92rem !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.28) !important;
+            cursor: pointer !important;
+            margin: 0 !important;
+            text-decoration: none !important;
+            min-height: 40px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-button {
+                padding: 9px 14px !important;
+                font-size: 0.86rem !important;
+                min-height: 38px !important;
+            }
+        }
+        .introjs-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13,110,253,0.42) !important;
+        }
+        .introjs-button.introjs-prevbutton {
+            background: #fff !important;
+            color: #0d6efd !important;
+            border: 2px solid #0d6efd !important;
+            box-shadow: none !important;
+        }
+        .introjs-button.introjs-prevbutton:hover { background: #f0f7ff !important; }
+        .introjs-button.introjs-disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+            transform: none !important;
+        }
+
+        .introjs-arrow.top { border-bottom-color: #fff !important; }
+        .introjs-arrow.bottom { border-top-color: #fafbfc !important; }
+        .introjs-arrow.left { border-right-color: #fff !important; }
+        .introjs-arrow.right { border-left-color: #fff !important; }
+
+        @keyframes introFadeIn {
+            from { opacity: 0; transform: scale(0.96) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        #btnTour {
+            box-shadow: 0 4px 12px rgba(13,110,253,0.25);
+            transition: all 0.2s ease;
+        }
+        #btnTour:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13,110,253,0.4);
+        }
+        @media (max-width: 575.98px) {
+            #btnTour { font-size: 0.8rem; padding: 0.35rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-hero">
+    <div class="text-center mb-4">
+        <h1 class="display-4 fw-bold"
+            data-intro="<strong>¡Bienvenido al sistema de Charcutería! 🥓</strong><br><br>En este recorrido rápido te mostraré cómo iniciar sesión y acceder a tu panel de trabajo. Dura menos de 30 segundos."
+            data-step="1">🥓 QUESOS Y EMBUTIDOS A&M</h1>
+        <p class="text-muted mb-0">Sistema de ventas y administración</p>
+    </div>
+
+    <div class="card shadow-sm w-100" style="max-width: 420px;">
+        <div class="card-body p-4">
+            <form id="loginFormEl">
+                <h5 class="text-center mb-4"
+                    data-intro="<strong>Inicio de sesión seguro</strong><br><br>El sistema detecta automáticamente tu rol (<strong>administrador</strong> o <strong>vendedor</strong>) y te lleva al panel correspondiente."
+                    data-step="2">Iniciar sesión</h5>
+
+                <div class="mb-3">
+                    <label for="loginEmail" class="form-label">Email</label>
+                    <input type="email"
+                           class="form-control form-control-lg"
+                           id="loginEmail"
+                           placeholder="usuario@charcuteria.com"
+                           autocomplete="email"
+                           data-intro="<strong>📧 Tu correo electrónico</strong><br><br>Escribe el email con el que fuiste registrado. Ejemplo: <code>admin@charcuteria.com</code>"
+                           data-step="3"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Contraseña</label>
+                    <input type="password"
+                           class="form-control form-control-lg"
+                           id="loginPassword"
+                           autocomplete="current-password"
+                           data-intro="<strong>🔒 Tu contraseña</strong><br><br>Ingresa tu contraseña personal. Distingue entre <strong>MAYÚSCULAS</strong> y <strong>minúsculas</strong>."
+                           data-step="4"
+                           required>
+                </div>
+
+                <div id="loginError" class="alert alert-danger py-2 mb-0" style="display:none;"></div>
+
+                <button type="submit"
+                        class="btn btn-primary btn-lg w-100 mt-3"
+                        id="loginBtnSubmit"
+                        data-intro="<strong>✅ Ingresar al sistema</strong><br><br>Una vez completes tus datos, haz clic aquí. Si es tu primera vez, el sistema te llevará directo a tu panel."
+                        data-step="5">
+                    Ingresar
+                </button>
+            </form>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">¿No tiene cuenta? Contacte al administrador.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="btnTour"
+        class="btn btn-outline-info btn-sm position-fixed"
+        style="top: 15px; right: 15px; z-index: 1000;"
+        title="Ver tutorial">❓ Ayuda</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+
+<script type="module">
+    import Cl_sSupabase from "./dist/services/Cl_sSupabase.js";
+
+    // ==================== INTRO.JS ====================
+    const opcionesTour = {
+        nextLabel: "Siguiente →",
+        prevLabel: "← Anterior",
+        doneLabel: "¡Empezar! 🚀",
+        skipLabel: "✕",
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        disableInteraction: true,
+        positionPrecedence: ["top", "bottom", "right", "left"],
+        scrollToElement: true,
+        scrollPadding: 80,
+        helperElementPadding: 6,
+    };
+
+    function iniciarTour() {
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        introJs().setOptions(opcionesTour)
+            .oncomplete(() => { document.body.style.overflow = originalOverflow || ""; })
+            .onexit(() => { document.body.style.overflow = originalOverflow || ""; })
+            .start();
+    }
+
+    document.getElementById("btnTour").addEventListener("click", iniciarTour);
+
+    if (!localStorage.getItem("tourIndexVisto")) {
+        setTimeout(() => {
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+            introJs().setOptions(opcionesTour)
+                .oncomplete(() => {
+                    document.body.style.overflow = originalOverflow || "";
+                    localStorage.setItem("tourIndexVisto", "1");
+                })
+                .onexit(() => {
+                    document.body.style.overflow = originalOverflow || "";
+                    localStorage.setItem("tourIndexVisto", "1");
+                })
+                .start();
+        }, 600);
+    }
+
+    // ==================== SESIÓN ====================
+    try {
+        const perfilExistente = await Cl_sSupabase.getUsuarioActual();
+        if (perfilExistente) redirigirPorRol(perfilExistente.rol);
+    } catch (e) {
+        console.warn("[Index] Error verificando sesión:", e);
+    }
+
+    function redirigirPorRol(rol) {
+        if (rol === "admin") window.location.replace("admin.html");
+        else if (rol === "vendedor") window.location.replace("vendedor.html");
+        return true;
+    }
+
+    const form = document.getElementById("loginFormEl");
+    const errorBox = document.getElementById("loginError");
+    const inputEmail = document.getElementById("loginEmail");
+    const inputPass = document.getElementById("loginPassword");
+    const btnSubmit = document.getElementById("loginBtnSubmit");
+
+    function mostrarError(msg) { errorBox.textContent = msg; errorBox.style.display = "block"; }
+    function limpiarError() { errorBox.textContent = ""; errorBox.style.display = "none"; }
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        limpiarError();
+
+        const email = inputEmail.value.trim();
+        const password = inputPass.value.trim();
+
+        if (!email || !password) { mostrarError("Ingrese email y contraseña"); return; }
+
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = "Ingresando...";
+
+        try {
+            const res = await Cl_sSupabase.login(email, password);
+            if (!res.ok) {
+                mostrarError(res.mensaje || "Credenciales inválidas");
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = "Ingresar";
+                return;
+            }
+
+            const perfil = await Cl_sSupabase.getUsuarioActual();
+            if (!perfil) {
+                mostrarError("Login correcto pero sin perfil asignado.");
+                await Cl_sSupabase.logout();
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = "Ingresar";
+                return;
+            }
+            if (perfil.activo === false) {
+                mostrarError("Su cuenta está desactivada.");
+                await Cl_sSupabase.logout();
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = "Ingresar";
+                return;
+            }
+
+            redirigirPorRol(perfil.rol);
+        } catch (err) {
+            mostrarError("Error inesperado: " + (err?.message || err));
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = "Ingresar";
+        }
+    });
+
+    inputEmail.addEventListener("input", limpiarError);
+    inputPass.addEventListener("input", limpiarError);
+</script>
+</body>
+</html>

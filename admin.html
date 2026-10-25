@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Charcutería - Administración</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+    <style>
+        html { -webkit-text-size-adjust: 100%; }
+        body { background: #f8f9fa; overflow-x: hidden; }
+
+        .stock-bajo { background-color: #fff3cd !important; }
+        .stock-cero { background-color: #f8d7da !important; }
+
+        @media (max-width: 767.98px) {
+            .btn { min-height: 40px; padding: 0.5rem 0.75rem; font-size: 0.9rem; }
+            .btn-sm { min-height: 34px; padding: 0.35rem 0.6rem; font-size: 0.8rem; }
+        }
+
+        .admin-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .admin-header h1 { font-size: 1.25rem; margin: 0; }
+        .admin-header .acciones {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        @media (min-width: 768px) { .admin-header h1 { font-size: 1.75rem; } }
+
+        .nav-tabs-scroll {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+            white-space: nowrap;
+        }
+        .nav-tabs-scroll::-webkit-scrollbar { display: none; }
+        .nav-tabs-scroll .nav-item { flex: 0 0 auto; }
+        .nav-tabs-scroll .nav-link { padding: 0.6rem 0.9rem; font-size: 0.9rem; }
+        @media (max-width: 767.98px) {
+            .nav-tabs-scroll .nav-link { font-size: 0.8rem; padding: 0.5rem 0.75rem; }
+        }
+
+        .card-totales h6 { font-size: 0.7rem; }
+        .card-totales h3, .card-totales h4 { font-size: 1.15rem; margin: 0; }
+        .card-totales small { font-size: 0.75rem; }
+        @media (min-width: 768px) {
+            .card-totales h3, .card-totales h4 { font-size: 1.6rem; }
+        }
+
+        @media (max-width: 767.98px) {
+            .tabla-movil thead { display: none; }
+            .tabla-movil tbody tr {
+                display: block;
+                background: #fff;
+                border: 1px solid #dee2e6;
+                border-radius: 0.5rem;
+                margin-bottom: 0.75rem;
+                padding: 0.5rem 0.75rem;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            }
+            .tabla-movil tbody tr.stock-bajo { border-color: #ffc107; }
+            .tabla-movil tbody tr.stock-cero { border-color: #dc3545; }
+            .tabla-movil tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.4rem 0;
+                border: none;
+                border-bottom: 1px dashed #e9ecef;
+                font-size: 0.9rem;
+                text-align: right;
+            }
+            .tabla-movil tbody td:last-child { border-bottom: none; padding-top: 0.6rem; }
+            .tabla-movil tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #6c757d;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                text-align: left;
+                flex: 0 0 auto;
+                margin-right: 0.75rem;
+            }
+            .tabla-movil tbody td > * { text-align: right; }
+            .tabla-movil tbody td[data-label="Acciones"] {
+                justify-content: flex-end;
+                gap: 0.4rem;
+                flex-wrap: wrap;
+            }
+            .tabla-movil tbody td[data-label="Acciones"]::before { content: none; }
+        }
+
+        @media (max-width: 767.98px) {
+            .filtros-movil .col-md-4,
+            .filtros-movil .col-md-3 { margin-bottom: 0.5rem; }
+        }
+
+        @media (max-width: 575.98px) { .modal-dialog { margin: 0.5rem; } }
+
+        /* ========== INTRO.JS — PREMIUM ========== */
+        .introjs-overlay {
+            background: rgba(0,0,0,0.82) !important;
+            backdrop-filter: blur(4px);
+        }
+        .introjs-helperLayer {
+            border-radius: 12px !important;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.82),
+                        0 0 0 4px rgba(255, 193, 7, 0.75),
+                        0 0 30px rgba(255, 193, 7, 0.5) !important;
+            transition: all 0.25s ease !important;
+        }
+        .introjs-tooltipReferenceLayer { z-index: 9999999 !important; }
+        .introjs-tooltip {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            border-radius: 14px !important;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.45) !important;
+            padding: 0 !important;
+            max-width: 440px !important;
+            min-width: 320px !important;
+            border: none !important;
+            background: #fff !important;
+            overflow: hidden;
+            animation: introFadeIn 0.3s ease-out;
+            position: relative;
+        }
+
+        @media (max-width: 767.98px) {
+            .introjs-tooltip {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                max-width: calc(100vw - 24px) !important;
+                min-width: calc(100vw - 24px) !important;
+                width: calc(100vw - 24px) !important;
+                max-height: calc(100vh - 100px) !important;
+                overflow-y: auto !important;
+                margin: 0 !important;
+                animation: introFadeInMobile 0.3s ease-out;
+            }
+            .introjs-arrow { display: none !important; }
+            .introjs-tooltip-header { position: sticky; top: 0; z-index: 3; }
+            .introjs-tooltipbuttons {
+                position: sticky;
+                bottom: 0;
+                z-index: 3;
+                box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+            }
+            .introjs-tooltiptext { max-height: none !important; }
+        }
+        @keyframes introFadeInMobile {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .introjs-tooltip .introjs-skipbutton,
+        .introjs-tooltipbuttons .introjs-skipbutton,
+        .introjs-button.introjs-skipbutton {
+            position: absolute !important;
+            top: 12px !important;
+            right: 12px !important;
+            width: 30px !important;
+            height: 30px !important;
+            min-width: 30px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 50% !important;
+            background: rgba(255,255,255,0.25) !important;
+            color: #fff !important;
+            border: none !important;
+            font-size: 0 !important;
+            line-height: 30px !important;
+            text-align: center !important;
+            cursor: pointer !important;
+            transition: background 0.2s ease, transform 0.2s ease !important;
+            box-shadow: none !important;
+            z-index: 5 !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+        .introjs-tooltip .introjs-skipbutton::before,
+        .introjs-tooltipbuttons .introjs-skipbutton::before,
+        .introjs-button.introjs-skipbutton::before {
+            content: "✕" !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            line-height: 30px !important;
+            display: block;
+        }
+        .introjs-tooltip .introjs-skipbutton:hover,
+        .introjs-tooltipbuttons .introjs-skipbutton:hover,
+        .introjs-button.introjs-skipbutton:hover {
+            background: rgba(255,255,255,0.45) !important;
+            transform: scale(1.1) !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltip .introjs-skipbutton,
+            .introjs-tooltipbuttons .introjs-skipbutton {
+                top: 10px !important;
+                right: 10px !important;
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+                line-height: 28px !important;
+            }
+            .introjs-tooltip .introjs-skipbutton::before,
+            .introjs-tooltipbuttons .introjs-skipbutton::before {
+                font-size: 13px !important;
+                line-height: 28px !important;
+            }
+        }
+
+        .introjs-tooltip-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            padding: 18px 56px 18px 22px !important;
+            border-radius: 14px 14px 0 0 !important;
+            border: none !important;
+        }
+        .introjs-tooltip-title {
+            color: #fff !important;
+            font-weight: 700 !important;
+            font-size: 1.1rem !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            margin: 0 !important;
+            line-height: 1.3 !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltip-header { padding: 16px 50px 16px 18px !important; }
+            .introjs-tooltip-title { font-size: 1rem !important; }
+        }
+
+        .introjs-tooltiptext {
+            padding: 20px 22px 12px 22px !important;
+            font-size: 0.98rem !important;
+            line-height: 1.55 !important;
+            color: #212529 !important;
+            background: #fff !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltiptext {
+                padding: 16px 18px 10px 18px !important;
+                font-size: 0.92rem !important;
+            }
+        }
+        .introjs-tooltiptext strong { color: #0d6efd; font-weight: 700; }
+        .introjs-tooltiptext code {
+            background: #f8f9fa;
+            color: #d63384;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+        }
+
+        .introjs-progress {
+            background: #e9ecef !important;
+            height: 6px !important;
+            margin: 8px 22px 0 22px !important;
+            border-radius: 3px !important;
+            overflow: hidden;
+        }
+        .introjs-progressbar {
+            background: linear-gradient(90deg, #0d6efd 0%, #198754 100%) !important;
+            transition: width 0.3s ease !important;
+            border-radius: 3px !important;
+        }
+
+        .introjs-tooltipbuttons {
+            padding: 14px 22px 18px 22px !important;
+            border-top: 1px solid #f0f0f0 !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            align-items: center !important;
+            gap: 8px;
+            background: #fafbfc !important;
+            flex-wrap: wrap !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltipbuttons {
+                padding: 12px 18px 16px 18px !important;
+                gap: 6px;
+            }
+        }
+
+        .introjs-button {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+            border: none !important;
+            text-shadow: none !important;
+            color: #fff !important;
+            padding: 10px 18px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 0.92rem !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.28) !important;
+            cursor: pointer !important;
+            margin: 0 !important;
+            text-decoration: none !important;
+            min-height: 40px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-button {
+                padding: 9px 14px !important;
+                font-size: 0.86rem !important;
+                min-height: 38px !important;
+            }
+        }
+        .introjs-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13,110,253,0.42) !important;
+        }
+        .introjs-button.introjs-prevbutton {
+            background: #fff !important;
+            color: #0d6efd !important;
+            border: 2px solid #0d6efd !important;
+            box-shadow: none !important;
+        }
+        .introjs-button.introjs-prevbutton:hover { background: #f0f7ff !important; }
+        .introjs-button.introjs-disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+            transform: none !important;
+        }
+
+        .introjs-arrow.top { border-bottom-color: #fff !important; }
+        .introjs-arrow.bottom { border-top-color: #fafbfc !important; }
+        .introjs-arrow.left { border-right-color: #fff !important; }
+        .introjs-arrow.right { border-left-color: #fff !important; }
+
+        @keyframes introFadeIn {
+            from { opacity: 0; transform: scale(0.96) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        #btnTourAdmin {
+            box-shadow: 0 4px 12px rgba(13,110,253,0.25);
+            transition: all 0.2s ease;
+        }
+        #btnTourAdmin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13,110,253,0.4);
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container-fluid py-3 py-md-4 px-2 px-md-4">
+
+    <div class="admin-header">
+        <h1>⚙️ Panel de Administración</h1>
+        <div class="acciones">
+            <span class="badge bg-info"
+                  id="tasaBadgeAdmin"
+                  data-intro="<strong>💵 Tasa BCV del día</strong><br><br>Esta es la tasa oficial del Banco Central de Venezuela. Se actualiza automáticamente y se usa para calcular todos los precios en bolívares."
+                  data-step="1">Tasa BCV: —</span>
+            <button class="btn btn-outline-info btn-sm" id="btnTourAdmin" title="Ver tutorial">❓ Ayuda</button>
+            <button class="btn btn-outline-secondary btn-sm"
+                    id="btnLogoutAdmin"
+                    data-intro="<strong>🚪 Cerrar sesión</strong><br><br>Sal del sistema de forma segura. Al hacerlo, tu sesión se destruye y no podrás volver atrás con el navegador."
+                    data-step="8">Salir</button>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs nav-tabs-scroll" id="adminTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#productos"
+                    data-intro="<strong>📦 Productos</strong><br><br>Aquí gestionas todo tu catálogo: crear productos nuevos, editar precios de compra y venta, controlar el stock y agregar imágenes."
+                    data-step="2">📦 Productos</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#categorias"
+                    data-intro="<strong>🏷️ Categorías</strong><br><br>Organiza tus productos en categorías: Jamones, Quesos, Embutidos, etc. Puedes activarlas o desactivarlas cuando quieras."
+                    data-step="3">🏷️ Categorías</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#ventas"
+                    data-intro="<strong>🧾 Ventas</strong><br><br>Consulta todas las ventas del sistema. Puedes filtrar por fecha, cliente, estado o método de pago. También puedes cobrar fiados pendientes o cancelar ventas (el stock se devuelve automáticamente)."
+                    data-step="4">🧾 Ventas</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cierre"
+                    data-intro="<strong>📊 Cierre de Caja</strong><br><br>Aquí ves el resumen completo:<br>• Ventas del día (Bs. y USD)<br>• Ganancia estimada<br>• Fiados pendientes<br>• Producto más vendido<br>• Detalle por método de pago<br>• Resumen del mes<br>• Cierre mensual con detalle día por día"
+                    data-step="5">📊 Cierre</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#usuarios"
+                    data-intro="<strong>👥 Usuarios</strong><br><br>Crea nuevas cuentas de <strong>vendedor</strong> o <strong>administrador</strong>. También puedes activar, desactivar o cambiar el rol de cualquier usuario."
+                    data-step="6">👥 Usuarios</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="productos">
+            <div class="card shadow-sm mb-3"
+                 data-intro="<strong>🔍 Búsqueda y filtros</strong><br><br>Usa estos campos para encontrar productos rápido. Puedes buscar por código, nombre o filtrar por categoría."
+                 data-step="7">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                        <h5 class="card-title mb-0">Gestión de Productos</h5>
+                        <button class="btn btn-primary btn-sm" id="btnAgregarProducto">➕ Agregar</button>
+                    </div>
+                    <div class="row g-2 filtros-movil">
+                        <div class="col-12 col-md-4">
+                            <input type="text" id="inBuscarPorCodigo" class="form-control" placeholder="Buscar por código">
+                        </div>
+                        <div class="col-12 col-md-4">
+<input type="text" id="inBuscarProducto" class="form-control" placeholder="Buscar por nombre" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="buscar-producto-admin">                        </div>
+                        <div class="col-12 col-md-4">
+                            <select id="inFiltroCategoriaAdmin" class="form-select">
+                                <option value="Todas">Todas las categorías</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0 tabla-movil">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Código</th><th>Nombre</th><th>Categoría</th>
+                                <th>Tipo</th><th>Stock</th><th>P. Compra ($)</th>
+                                <th>P. Venta ($)</th><th>P. Venta (Bs.)</th>
+                                <th>Ganancia/u</th><th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaProductos"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="categorias">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">Gestión de Categorías</h5>
+                    <button class="btn btn-primary btn-sm" id="btnAgregarCategoria">➕ Agregar</button>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 tabla-movil">
+                        <thead class="table-light">
+                            <tr><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody id="tablaCategorias"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="ventas">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="row g-2 filtros-movil">
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small">Estado</label>
+                            <select id="inFiltroEstado" class="form-select form-select-sm">
+                                <option value="Todos">Todos</option>
+                                <option value="Pagada">Pagadas</option>
+                                <option value="Fiada">Fiadas</option>
+                                <option value="Cancelada">Canceladas</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small">Pago</label>
+                            <select id="inFiltroMetodoPago" class="form-select form-select-sm">
+                                <option value="Todos">Todos</option>
+                                <option value="Efectivo Bs.">Efectivo Bs.</option>
+                                <option value="Divisa ($)">Divisa ($)</option>
+                                <option value="Pago Móvil">Pago Móvil</option>
+                                <option value="Punto de Venta">Punto de Venta</option>
+                                <option value="Fiado">Fiado</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small">Fecha</label>
+                            <input type="date" id="inFiltroFecha" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small">Cédula</label>
+                            <input type="text" id="inCedulaBuscar" class="form-control form-control-sm" placeholder="Cédula">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 tabla-movil">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th><th>Cliente</th><th>Cédula</th><th>Productos</th>
+                                <th>Total Bs.</th><th>Total $</th><th>Método</th>
+                                <th>Detalle</th><th>Fecha</th><th>Estado</th><th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPedidos"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="cierre">
+
+            <div class="row mb-3 g-2">
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm border-0 bg-success text-white card-totales">
+                        <div class="card-body p-2 p-md-3">
+                            <h6 class="text-uppercase text-white-50 mb-1">Ventas del Día (Bs.)</h6>
+                            <h3 class="fw-bold mb-0" id="cierreTotalBs">Bs. 0.00</h3>
+                            <small class="text-white-50" id="cierreTotalUSD">$0.00</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm border-0 bg-primary text-white card-totales">
+                        <div class="card-body p-2 p-md-3">
+                            <h6 class="text-uppercase text-black-50 mb-1">Ganancia</h6>
+                            <h3 class="fw-bold mb-0" id="cierreGananciaBs">Bs. 0.00</h3>
+                            <small class="text-black-50" id="cierreGananciaUSD">$0.00</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm border-0 bg-warning text-dark card-totales">
+                        <div class="card-body p-2 p-md-3">
+                            <h6 class="text-uppercase mb-1">Fiado Total</h6>
+                            <h3 class="fw-bold mb-0" id="cierreFiadoBs">Bs. 0.00</h3>
+                            <small id="cierreFiadoUSD">$0.00</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm border-0 bg-info text-white card-totales">
+                        <div class="card-body p-2 p-md-3">
+                            <h6 class="text-uppercase text-black-50 mb-1">Más Vendido</h6>
+                            <h5 class="fw-bold mb-1" id="cierreMasVendido">—</h5>
+                            <small id="cierreMasVendidoDetalle" class="text-black-50">—</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white fw-bold">💳 Ingresos del Día por Método de Pago</div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0 tabla-movil">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Método</th>
+                                <th>Total Bs.</th>
+                                <th>Total $</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaResumenMetodoPago"></tbody>
+                    </table>
+                </div>
+            </div>
+<div class="card shadow-sm mb-3">
+                <div class="card-header bg-white fw-bold">📈 Detalle de Ventas del Día</div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0 tabla-movil">
+                        <thead class="table-light">
+                            <tr><th>Hora</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Total Bs.</th><th>Pago</th></tr>
+                        </thead>
+                        <tbody id="tablaDetalleCierre"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-white fw-bold">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <span>📅 Cierre Mensual</span>
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <input type="month" id="mesCierreInput" class="form-control form-control-sm" style="width: 150px;">
+                            <button class="btn btn-sm btn-primary" id="btnAplicarMesCierre">Ver mes</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" id="cierreMensualContenedor" style="display:none;">
+                    <div class="row mb-3 g-2">
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-success text-white card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase text-white-50 mb-1">Ventas del Mes</h6>
+                                    <h4 class="fw-bold mb-0" id="cierreMesTotalBsDetalle">Bs. 0.00</h4>
+                                    <small class="text-white-50" id="cierreMesTotalUSDDetalle">$0.00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-primary text-white card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase text-white-50 mb-1">Ganancia Mes</h6>
+                                    <h4 class="fw-bold mb-0" id="cierreMesGananciaBsDetalle">Bs. 0.00</h4>
+                                    <small class="text-white-50" id="cierreMesGananciaUSDDetalle">$0.00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-warning text-dark card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase mb-1">Fiado Mes</h6>
+                                    <h4 class="fw-bold mb-0" id="cierreMesFiadoBs">Bs. 0.00</h4>
+                                    <small id="cierreMesFiadoUSD">$0.00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-info text-white card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase text-black-50 mb-1">Más Vendido Mes</h6>
+                                    <h5 class="fw-bold mb-1" id="cierreMesMasVendido">—</h5>
+                                    <small id="cierreMesMasVendidoDetalle" class="text-white-50">—</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3 g-2">
+                        <div class="col-6">
+                            <div class="p-2 p-md-3 bg-light rounded">
+                                <span class="text-muted d-block small">Ventas</span>
+                                <strong class="fs-5" id="cierreMesCantidadVentas">0</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 p-md-3 bg-light rounded">
+                                <span class="text-muted d-block small">Promedio</span>
+                                <strong class="fs-6" id="cierreMesPromedioUSD">Bs. 0.00</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold mb-2">📊 Detalle Día por Día</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0 tabla-movil">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Fecha</th><th>Ventas</th><th>Total Bs.</th>
+                                    <th>Total $</th><th>Ganancia Bs.</th><th>Ganancia $</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaCierreMensualDias"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-white fw-bold">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <span>📅 Historial de Cierre Diario</span>
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <input type="date" id="fechaCierreHistorial" class="form-control form-control-sm" style="width: 150px;">
+                            <button class="btn btn-sm btn-primary" id="btnAplicarFechaCierre">Ver día</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" id="cierreHistorialContenedor" style="display:none;">
+                    <div class="row mb-3 g-2">
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-success text-white card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase text-white-50 mb-1">Ventas del Día</h6>
+                                    <h4 class="fw-bold mb-0" id="histTotalBs">Bs. 0.00</h4>
+                                    <small class="text-white-50" id="histTotalUSD">$0.00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-primary text-white card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase text-white-50 mb-1">Ganancia</h6>
+                                    <h4 class="fw-bold mb-0" id="histGananciaBs">Bs. 0.00</h4>
+                                    <small class="text-white-50" id="histGananciaUSD">$0.00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-warning text-dark card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase mb-1">Fiado Total</h6>
+                                    <h4 class="fw-bold mb-0" id="histFiadoBs">Bs. 0.00</h4>
+                                    <small id="histFiadoUSD">$0.00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card h-100 shadow-sm border-0 bg-info text-white card-totales">
+                                <div class="card-body p-2 p-md-3">
+                                    <h6 class="text-uppercase text-white-50 mb-1">Más Vendido</h6>
+                                    <h5 class="fw-bold mb-1" id="histMasVendido">—</h5>
+                                    <small id="histMasVendidoDetalle" class="text-white-50">—</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold mb-2 mt-3">💳 Ingresos del Día por Método de Pago</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0 tabla-movil">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Método</th>
+                                    <th>Total Bs.</th>
+                                    <th>Total $</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaResumenMetodoHistorial"></tbody>
+                        </table>
+                    </div>
+
+                    <h6 class="fw-bold mb-2 mt-4">📈 Detalle de Ventas del Día</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0 tabla-movil">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Hora</th><th>Cliente</th><th>Producto</th>
+                                    <th>Cantidad</th><th>Total Bs.</th><th>Pago</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaDetalleHistorial"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="usuarios">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h5 class="card-title mb-0">Gestión de Usuarios</h5>
+                    <button class="btn btn-primary btn-sm" id="btnAgregarUsuario">➕ Agregar</button>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 tabla-movil">
+                        <thead class="table-light">
+                            <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody id="tablaUsuarios"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="tplFilaProducto">
+    <tr>
+        <td data-field="codigo" data-label="Código"></td>
+        <td data-field="nombre" data-label="Nombre"></td>
+        <td data-field="categoria" data-label="Categoría"></td>
+        <td data-field="tipo" data-label="Tipo"></td>
+        <td data-field="stock" data-label="Stock"></td>
+        <td data-field="precioCompra" data-label="P. Compra"></td>
+        <td data-field="precioVenta" data-label="P. Venta"></td>
+        <td data-field="precioVentaBs" data-label="P. Venta Bs."></td>
+        <td data-field="ganancia" data-label="Ganancia"></td>
+        <td data-label="Acciones">
+            <button class="btn btn-sm btn-warning btn-editar">Editar</button>
+            <button class="btn btn-sm btn-danger btn-eliminar">Disponibilidad</button>
+        </td>
+    </tr>
+</template>
+
+<template id="tplFilaCategoria">
+    <tr>
+        <td data-field="nombre" data-label="Nombre"></td>
+        <td data-field="descripcion" data-label="Descripción"></td>
+        <td data-label="Estado"><span class="badge" data-field="estadoBadge"></span></td>
+        <td data-label="Acciones">
+            <button class="btn btn-sm btn-warning btn-editar-cat">Editar</button>
+            <button class="btn btn-sm btn-outline-secondary btn-toggle-cat">Toggle</button>
+            <button class="btn btn-sm btn-danger btn-eliminar-cat">Eliminar</button>
+        </td>
+    </tr>
+</template>
+
+<template id="tplFilaPedido">
+    <tr>
+        <td data-field="id" data-label="ID"></td>
+        <td data-field="nomCliente" data-label="Cliente"></td>
+        <td data-field="cedula" data-label="Cédula"></td>
+        <td data-label="Productos"><small data-field="productos"></small></td>
+        <td data-field="totalBs" data-label="Total Bs."></td>
+        <td data-field="totalUSD" data-label="Total $"></td>
+        <td data-field="metodoPago" data-label="Método"></td>
+        <td data-field="detallesPago" data-label="Detalle"></td>
+        <td data-field="fecha" data-label="Fecha"></td>
+        <td data-field="estado" data-label="Estado"></td>
+        <td data-label="Acciones">
+            <button class="btn btn-sm btn-success btn-procesar">Cobrar</button>
+            <button class="btn btn-sm btn-danger btn-cancelar">Cancelar</button>
+            <button class="btn btn-sm btn-outline-danger btn-eliminar-pedido">🗑️ Eliminar</button>
+        </td>
+    </tr>
+</template>
+
+<template id="tplFilaUsuario">
+    <tr>
+        <td data-field="nombre" data-label="Nombre"></td>
+        <td data-field="email" data-label="Email"></td>
+        <td data-label="Rol">
+            <select class="form-select form-select-sm sel-rol">
+                <option value="admin">Administrador</option>
+                <option value="vendedor">Vendedor</option>
+            </select>
+        </td>
+        <td data-label="Estado"><span class="badge" data-field="estadoBadge"></span></td>
+        <td data-label="Acciones">
+            <button class="btn btn-sm btn-outline-secondary btn-toggle-user">Toggle</button>
+        </td>
+    </tr>
+</template>
+
+<template id="tplFilaStockBajo">
+    <tr>
+        <td data-field="codigo" data-label="Código"></td>
+        <td data-field="nombre" data-label="Nombre"></td>
+        <td data-field="stock" data-label="Stock"></td>
+        <td data-field="tipo" data-label="Tipo"></td>
+    </tr>
+</template>
+
+<template id="tplFilaDetalleCierre">
+    <tr>
+        <td data-field="hora" data-label="Hora"></td>
+        <td data-field="cliente" data-label="Cliente"></td>
+        <td data-field="producto" data-label="Producto"></td>
+        <td data-field="cantidad" data-label="Cantidad"></td>
+        <td data-field="totalBs" data-label="Total Bs."></td>
+        <td data-field="metodoPago" data-label="Pago"></td>
+    </tr>
+</template>
+
+<template id="tplFilaCierreMes">
+    <tr>
+        <td data-field="fecha" data-label="Fecha"></td>
+        <td data-field="cantidad" data-label="Ventas"></td>
+        <td data-field="totalBs" data-label="Total Bs."></td>
+        <td data-field="totalUSD" data-label="Total $"></td>
+        <td data-field="gananciaBs" data-label="Ganancia Bs."></td>
+        <td data-field="gananciaUSD" data-label="Ganancia $"></td>
+    </tr>
+</template>
+
+<template id="tplFilaResumenMetodo">
+    <tr>
+        <td data-field="metodo" data-label="Método"></td>
+        <td data-field="totalBs" data-label="Total Bs."></td>
+        <td data-field="totalUSD" data-label="Total $"></td>
+        <td data-field="cantidad" data-label="Cantidad"></td>
+    </tr>
+</template>
+
+<template id="tplFilaResumenMetodoHistorial">
+    <tr>
+        <td data-field="metodo" data-label="Método"></td>
+        <td data-field="totalBs" data-label="Total Bs."></td>
+        <td data-field="totalUSD" data-label="Total $"></td>
+        <td data-field="cantidad" data-label="Cantidad"></td>
+    </tr>
+</template>
+
+<template id="tplFilaDetalleHistorial">
+    <tr>
+        <td data-field="hora" data-label="Hora"></td>
+        <td data-field="cliente" data-label="Cliente"></td>
+        <td data-field="producto" data-label="Producto"></td>
+        <td data-field="cantidad" data-label="Cantidad"></td>
+        <td data-field="totalBs" data-label="Total Bs."></td>
+        <td data-field="metodoPago" data-label="Pago"></td>
+    </tr>
+</template>
+
+<div class="modal fade" id="productoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productoModalLabel">Agregar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formProductoModal">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Código</label>
+                            <input type="text" id="prodCodigoModal" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="prodNombreModal" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Categoría</label>
+                            <select id="prodCategoriaModal" class="form-select" required>
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Tipo de venta</label>
+                            <select id="prodTipoVentaModal" class="form-select" required>
+                                <option value="gramos">Por gramos (Kg)</option>
+                                <option value="unidad">Por unidad</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <label class="form-label">P. Compra ($)</label>
+                            <input type="number" step="0.01" id="prodPrecioCompraModal" class="form-control" required>
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <label class="form-label">P. Venta ($)</label>
+                            <input type="number" step="0.01" id="prodPrecioVentaModal" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Stock (g o u)</label>
+                            <input type="number" id="prodStockModal" class="form-control" required min="0">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Imagen (opcional)</label>
+                            <input type="file" id="prodImagenInputModal" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+                    <img id="prodImagenModal" src="" alt="Vista previa" class="img-fluid mt-2" style="display:none; max-height:150px; object-fit:contain;">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarProductoModal">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="categoriaModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoriaModalLabel">Agregar Categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" id="catNombreModal" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descripción (opcional)</label>
+                    <input type="text" id="catDescripcionModal" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarCategoriaModal">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="usuarioModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Nombre completo</label>
+                    <input type="text" id="userNombreModal" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="userEmailModal" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña (mín. 6 caracteres)</label>
+                    <input type="password" id="userPasswordModal" class="form-control" minlength="6" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Rol</label>
+                    <select id="userRolModal" class="form-select" required>
+                        <option value="vendedor">Vendedor</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarUsuarioModal">Crear Usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cobrarFiadoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cobrar fiado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold mb-2" id="cobrarFiadoInfo">—</p>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold">Método de pago</label>
+                    <select id="cobrarFiadoMetodo" class="form-select">
+                        <option value="">Seleccione</option>
+                        <option value="Efectivo Bs.">Efectivo Bs.</option>
+                        <option value="Divisa ($)">Divisa ($)</option>
+                        <option value="Pago Móvil">Pago Móvil</option>
+                        <option value="Punto de Venta">Punto de Venta</option>
+                    </select>
+                </div>
+                <div class="mb-2" id="cobrarFiadoDivMonto" style="display:none">
+                    <label class="form-label small fw-bold">Monto recibido (Bs.)</label>
+                    <input type="number" id="cobrarFiadoMonto" class="form-control" min="0" step="0.01">
+                </div>
+                <div class="mb-2" id="cobrarFiadoDivRef" style="display:none">
+                    <label class="form-label small fw-bold">Referencia (opcional)</label>
+                    <input type="text" id="cobrarFiadoRef" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnConfirmarCobrarFiado">Cobrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="adminAlertModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Aviso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="adminAlertModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="adminConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="adminConfirmModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="adminConfirmDeleteBtn">Eliminar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+
+<script type="module">
+    import Cl_sSupabase from "./dist/services/Cl_sSupabase.js";
+    import Cl_cAdmin from "./dist/controllers/Cl_cAdmin.js";
+    import Cl_vAdmin from "./dist/views/Cl_vAdmin.js";
+
+    const opcionesTour = {
+        nextLabel: "Siguiente →",
+        prevLabel: "← Anterior",
+        doneLabel: "¡Listo! ✓",
+        skipLabel: "✕",
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        disableInteraction: true,
+        positionPrecedence: ["top", "bottom", "right", "left"],
+        scrollToElement: true,
+        scrollPadding: 80,
+        helperElementPadding: 6,
+    };
+
+    function iniciarTourAdmin() {
+        const tabProductos = document.querySelector('[data-bs-target="#productos"]');
+        if (tabProductos && !tabProductos.classList.contains("active")) tabProductos.click();
+
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        setTimeout(() => {
+            introJs().setOptions(opcionesTour)
+                .oncomplete(() => { document.body.style.overflow = originalOverflow || ""; })
+                .onexit(() => { document.body.style.overflow = originalOverflow || ""; })
+                .start();
+        }, 400);
+    }
+
+    document.getElementById("btnTourAdmin")?.addEventListener("click", iniciarTourAdmin);
+
+    if (!localStorage.getItem("tourAdminVisto")) {
+        setTimeout(() => {
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+            introJs().setOptions(opcionesTour)
+                .oncomplete(() => {
+                    document.body.style.overflow = originalOverflow || "";
+                    localStorage.setItem("tourAdminVisto", "1");
+                })
+                .onexit(() => {
+                    document.body.style.overflow = originalOverflow || "";
+                    localStorage.setItem("tourAdminVisto", "1");
+                })
+                .start();
+        }, 1500);
+    }
+
+    async function guardia() {
+        const perfil = await Cl_sSupabase.getUsuarioActual();
+        if (!perfil) { window.location.replace("index.html"); return false; }
+        if (perfil.rol !== "admin") {
+            window.location.replace(perfil.rol === "vendedor" ? "vendedor.html" : "index.html");
+            return false;
+        }
+        return true;
+    }
+
+    const autorizado = await guardia();
+    if (!autorizado) throw new Error("Sin autorización");
+
+    window.addEventListener("pageshow", async () => {
+        const ok = await guardia();
+        if (!ok) window.location.replace("index.html");
+    });
+
+    document.addEventListener("visibilitychange", async () => {
+        if (document.visibilityState === "visible") await guardia();
+    });
+
+    document.getElementById("btnLogoutAdmin")?.addEventListener("click", async () => {
+        await Cl_sSupabase.logout();
+        window.location.replace("index.html");
+    });
+
+    const vista = new Cl_vAdmin();
+    new Cl_cAdmin(vista);
+</script>
+</body>
+</html>

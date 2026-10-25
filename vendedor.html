@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Charcutería - Vendedor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+    <style>
+        html { -webkit-text-size-adjust: 100%; }
+        body { background: #f8f9fa; overflow-x: hidden; }
+
+        .precio-bs { font-size: 1.1rem; color: #198754; font-weight: 700; }
+
+        @media (max-width: 767.98px) {
+            .btn { min-height: 40px; padding: 0.5rem 0.75rem; font-size: 0.9rem; }
+            .btn-sm { min-height: 34px; padding: 0.35rem 0.6rem; font-size: 0.8rem; }
+        }
+
+        .vendedor-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .vendedor-header h1 { font-size: 1.25rem; margin: 0; }
+        .vendedor-header .acciones {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        @media (min-width: 768px) { .vendedor-header h1 { font-size: 1.75rem; } }
+
+        @media (max-width: 575.98px) {
+            .col-md-4 { flex: 0 0 100%; max-width: 100%; }
+        }
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            .col-md-4 { flex: 0 0 50%; max-width: 50%; }
+        }
+
+        @media (max-width: 991.98px) {
+            #tablaCarrito { font-size: 0.85rem; }
+            #tablaCarrito td { padding: 0.35rem 0.25rem; }
+        }
+
+        @media (max-width: 767.98px) {
+            .tabla-movil thead { display: none; }
+            .tabla-movil tbody tr {
+                display: block;
+                background: #fff;
+                border: 1px solid #dee2e6;
+                border-radius: 0.5rem;
+                margin-bottom: 0.75rem;
+                padding: 0.5rem 0.75rem;
+            }
+            .tabla-movil tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.4rem 0;
+                border: none;
+                border-bottom: 1px dashed #e9ecef;
+                font-size: 0.9rem;
+                text-align: right;
+            }
+            .tabla-movil tbody td:last-child { border-bottom: none; }
+            .tabla-movil tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #6c757d;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                text-align: left;
+                margin-right: 0.75rem;
+            }
+        }
+
+        @media (max-width: 575.98px) { .modal-dialog { margin: 0.5rem; } }
+
+        /* ========== INTRO.JS — PREMIUM ========== */
+        .introjs-overlay {
+            background: rgba(0,0,0,0.82) !important;
+            backdrop-filter: blur(4px);
+        }
+        .introjs-helperLayer {
+            border-radius: 12px !important;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.82),
+                        0 0 0 4px rgba(255, 193, 7, 0.75),
+                        0 0 30px rgba(255, 193, 7, 0.5) !important;
+            transition: all 0.25s ease !important;
+        }
+        .introjs-tooltipReferenceLayer { z-index: 9999999 !important; }
+        .introjs-tooltip {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            border-radius: 14px !important;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.45) !important;
+            padding: 0 !important;
+            max-width: 440px !important;
+            min-width: 320px !important;
+            border: none !important;
+            background: #fff !important;
+            overflow: hidden;
+            animation: introFadeIn 0.3s ease-out;
+            position: relative;
+        }
+        @media (max-width: 767.98px) {
+            .introjs-tooltip {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                max-width: calc(100vw - 24px) !important;
+                min-width: calc(100vw - 24px) !important;
+                width: calc(100vw - 24px) !important;
+                max-height: calc(100vh - 100px) !important;
+                overflow-y: auto !important;
+                margin: 0 !important;
+                animation: introFadeInMobile 0.3s ease-out;
+            }
+            .introjs-arrow { display: none !important; }
+            .introjs-tooltip-header { position: sticky; top: 0; z-index: 3; }
+            .introjs-tooltipbuttons {
+                position: sticky;
+                bottom: 0;
+                z-index: 3;
+                box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+            }
+            .introjs-tooltiptext { max-height: none !important; }
+        }
+        @keyframes introFadeInMobile {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        .introjs-tooltip .introjs-skipbutton,
+        .introjs-tooltipbuttons .introjs-skipbutton,
+        .introjs-button.introjs-skipbutton {
+            position: absolute !important;
+            top: 12px !important;
+            right: 12px !important;
+            width: 30px !important;
+            height: 30px !important;
+            min-width: 30px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 50% !important;
+            background: rgba(255,255,255,0.25) !important;
+            color: #fff !important;
+            border: none !important;
+            font-size: 0 !important;
+            line-height: 30px !important;
+            text-align: center !important;
+            cursor: pointer !important;
+            transition: background 0.2s ease, transform 0.2s ease !important;
+            box-shadow: none !important;
+            z-index: 5 !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+        .introjs-tooltip .introjs-skipbutton::before,
+        .introjs-tooltipbuttons .introjs-skipbutton::before,
+        .introjs-button.introjs-skipbutton::before {
+            content: "✕" !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            line-height: 30px !important;
+            display: block;
+        }
+        .introjs-tooltip .introjs-skipbutton:hover,
+        .introjs-tooltipbuttons .introjs-skipbutton:hover,
+        .introjs-button.introjs-skipbutton:hover {
+            background: rgba(255,255,255,0.45) !important;
+            transform: scale(1.1) !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltip .introjs-skipbutton,
+            .introjs-tooltipbuttons .introjs-skipbutton {
+                top: 10px !important;
+                right: 10px !important;
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+                line-height: 28px !important;
+            }
+            .introjs-tooltip .introjs-skipbutton::before,
+            .introjs-tooltipbuttons .introjs-skipbutton::before {
+                font-size: 13px !important;
+                line-height: 28px !important;
+            }
+        }
+        .introjs-tooltip-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            padding: 18px 56px 18px 22px !important;
+            border-radius: 14px 14px 0 0 !important;
+            border: none !important;
+        }
+        .introjs-tooltip-title {
+            color: #fff !important;
+            font-weight: 700 !important;
+            font-size: 1.1rem !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            margin: 0 !important;
+            line-height: 1.3 !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltip-header { padding: 16px 50px 16px 18px !important; }
+            .introjs-tooltip-title { font-size: 1rem !important; }
+        }
+        .introjs-tooltiptext {
+            padding: 20px 22px 12px 22px !important;
+            font-size: 0.98rem !important;
+            line-height: 1.55 !important;
+            color: #212529 !important;
+            background: #fff !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltiptext {
+                padding: 16px 18px 10px 18px !important;
+                font-size: 0.92rem !important;
+            }
+        }
+        .introjs-tooltiptext strong { color: #0d6efd; font-weight: 700; }
+        .introjs-tooltiptext code {
+            background: #f8f9fa;
+            color: #d63384;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+        }
+        .introjs-progress {
+            background: #e9ecef !important;
+            height: 6px !important;
+            margin: 8px 22px 0 22px !important;
+            border-radius: 3px !important;
+            overflow: hidden;
+        }
+        .introjs-progressbar {
+            background: linear-gradient(90deg, #0d6efd 0%, #198754 100%) !important;
+            transition: width 0.3s ease !important;
+            border-radius: 3px !important;
+        }
+        .introjs-tooltipbuttons {
+            padding: 14px 22px 18px 22px !important;
+            border-top: 1px solid #f0f0f0 !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            align-items: center !important;
+            gap: 8px;
+            background: #fafbfc !important;
+            flex-wrap: wrap !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-tooltipbuttons {
+                padding: 12px 18px 16px 18px !important;
+                gap: 6px;
+            }
+        }
+        .introjs-button {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+            border: none !important;
+            text-shadow: none !important;
+            color: #fff !important;
+            padding: 10px 18px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 0.92rem !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.28) !important;
+            cursor: pointer !important;
+            margin: 0 !important;
+            text-decoration: none !important;
+            min-height: 40px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        @media (max-width: 575.98px) {
+            .introjs-button {
+                padding: 9px 14px !important;
+                font-size: 0.86rem !important;
+                min-height: 38px !important;
+            }
+        }
+        .introjs-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13,110,253,0.42) !important;
+        }
+        .introjs-button.introjs-prevbutton {
+            background: #fff !important;
+            color: #0d6efd !important;
+            border: 2px solid #0d6efd !important;
+            box-shadow: none !important;
+        }
+        .introjs-button.introjs-prevbutton:hover { background: #f0f7ff !important; }
+        .introjs-button.introjs-disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+            transform: none !important;
+        }
+        .introjs-arrow.top { border-bottom-color: #fff !important; }
+        .introjs-arrow.bottom { border-top-color: #fafbfc !important; }
+        .introjs-arrow.left { border-right-color: #fff !important; }
+        .introjs-arrow.right { border-left-color: #fff !important; }
+        @keyframes introFadeIn {
+            from { opacity: 0; transform: scale(0.96) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        #btnTourVendedor {
+            box-shadow: 0 4px 12px rgba(13,110,253,0.25);
+            transition: all 0.2s ease;
+        }
+        #btnTourVendedor:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13,110,253,0.4);
+        }
+    </style>
+</head>
+<body>
+<div id="vendedorPanel" class="container-fluid py-3 py-md-4 px-2 px-md-4">
+
+    <div class="vendedor-header">
+        <h1>🧑‍💼 Panel de Vendedor</h1>
+        <div class="acciones">
+            <span class="badge bg-info"
+                  id="tasaBadge"
+                  data-intro="<strong>💵 Tasa BCV del día</strong><br><br>Tasa oficial del Banco Central. Se actualiza automáticamente y todos los precios en bolívares se calculan con este valor."
+                  data-step="1">Tasa BCV: —</span>
+            <button class="btn btn-outline-info btn-sm" id="btnTourVendedor" title="Ver tutorial">❓ Ayuda</button>
+            <button class="btn btn-outline-secondary btn-sm"
+                    id="btnLogoutVendedor"
+                    data-intro="<strong>🚪 Cerrar sesión</strong><br><br>Sal del sistema de forma segura al terminar tu turno."
+                    data-step="9">Salir</button>
+        </div>
+    </div>
+
+    <div id="vendedorAlertContainer"></div>
+
+    <div class="row g-3">
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white fw-bold">🥓 Productos en Stock</div>
+                <div class="card-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col-12 col-md-7">
+                            <input type="text"
+                                   id="inBuscarProductoVendedor"
+                                   class="form-control"
+                                   placeholder="Buscar por nombre..."
+                                   data-intro="<strong>🔍 Buscar producto</strong><br><br>Escribe el nombre del producto que busca el cliente. Ejemplo: <code>jamón</code>, <code>queso</code>, <code>mortadela</code>."
+                                   data-step="2">
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <select id="selectCategoria"
+                                    class="form-select"
+                                    data-intro="<strong>🏷️ Filtrar por categoría</strong><br><br>Muestra solo ciertos productos: Jamones, Quesos, Embutidos, etc. Útil para encontrar más rápido."
+                                    data-step="3">
+                                <option value="Todas">Todas las categorías</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2"
+                         id="listaProductos"
+                         data-intro="<strong>🥓 Catálogo de productos</strong><br><br>Cada tarjeta muestra el nombre, precio y stock disponible.<br><br>Haz clic en <strong>➕ Agregar</strong> para añadir un producto al carrito."
+                         data-step="4">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white fw-bold d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <span>🛒 Venta Actual</span>
+                    <span id="ventaEditandoBadge" class="badge bg-warning text-dark" style="display:none;">Editando</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">Cédula del cliente (opcional)</label>
+                            <input type="text"
+                                   id="inCedulaCliente"
+                                   class="form-control"
+                                   placeholder="Cédula"
+                                   data-intro="<strong>🆔 Cédula del cliente</strong><br><br>Escribe la cédula. Si el cliente ya compró antes, el sistema <strong>rellena el nombre automáticamente</strong>."
+                                   data-step="5">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">Nombre del cliente (opcional)</label>
+                            <input type="text" id="inNomCliente" class="form-control" placeholder="Nombre">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mt-3"
+                         style="max-height: 40vh; overflow-y: auto;"
+                         data-intro="<strong>🛒 Carrito de compra</strong><br><br>Aquí ves todos los productos que el cliente va a llevar. Puedes eliminar alguno con el botón <strong>✕</strong> si se equivocó."
+                         data-step="6">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead class="table-light">
+                                <tr><th>Producto</th><th>Cant.</th><th>Subtotal</th><th></th></tr>
+                            </thead>
+                            <tbody id="tablaCarrito"></tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total:</span>
+                        <span id="spTotalPedido"
+                              class="precio-bs"
+                              data-intro="<strong>💰 Total a pagar</strong><br><br>Se calcula automáticamente en bolívares usando la tasa BCV del día. También se muestra el equivalente en dólares."
+                              data-step="7">Bs. 0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small">
+                        <span>Total USD:</span>
+                        <span id="spTotalPedidoUSD">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== FORMA DE PAGO (SIMPLE O MIXTO) ===== -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white fw-bold">💳 Forma de pago</div>
+                <div class="card-body">
+
+                    <div class="btn-group w-100 mb-3" role="group">
+                        <input type="radio" class="btn-check" name="modoPago" id="modoPagoSimple" value="simple" checked>
+                        <label class="btn btn-outline-primary btn-sm" for="modoPagoSimple">Un solo método</label>
+
+                        <input type="radio" class="btn-check" name="modoPago" id="modoPagoMixto" value="mixto">
+                        <label class="btn btn-outline-primary btn-sm" for="modoPagoMixto">Pago mixto (2 métodos)</label>
+                    </div>
+
+                    <!-- MÉTODO 1 -->
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">Método de pago</label>
+                        <select id="metodoPago"
+                                class="form-select mb-2"
+                                data-intro="<strong>💳 Forma de pago</strong><br><br>Selecciona cómo te va a pagar.<br><br>También puedes activar <strong>Pago mixto</strong> arriba para combinar 2 métodos."
+                                data-step="8">
+                            <option value="">Seleccione</option>
+                            <option value="Efectivo Bs.">Efectivo Bs.</option>
+                            <option value="Divisa ($)">Divisa ($)</option>
+                            <option value="Pago Móvil">Pago Móvil</option>
+                            <option value="Punto de Venta">Punto de Venta</option>
+                            <option value="Fiado">Fiado</option>
+                        </select>
+
+                        <div id="divPagoMovil" style="display:none">
+                            <label class="form-label small">Referencia / Teléfono</label>
+                            <input type="text" id="refPagoMovil" class="form-control mb-2" minlength="4" maxlength="11">
+                            <label class="form-label small">Monto pagado (Bs.)</label>
+                            <input type="number" id="montoPagoMovil" class="form-control mb-2" min="0" step="0.01">
+                        </div>
+                        <div id="divPuntoVenta" style="display:none">
+                            <small class="text-muted">Pago por punto de venta.</small>
+                        </div>
+                        <div id="divEfectivo" style="display:none">
+                            <label class="form-label small">Monto entregado (Bs.)</label>
+                            <input type="number" id="montoEfectivo" class="form-control mb-2" min="0" step="0.01">
+                            <small class="text-muted">💡 Se autocompleta con el total. Puedes editarlo si el cliente entregó más.</small>
+                        </div>
+
+                        <!-- Divisa ($) -->
+                        <div id="divDivisa" style="display:none">
+                            <label class="form-label small">Monto entregado ($)</label>
+                            <input type="number" id="montoDivisa" class="form-control mb-2" min="0" step="0.01">
+                            <label class="form-label small">Vuelto en $ (calculado)</label>
+                            <input type="text" id="vueltoDivisa" class="form-control mb-2" readonly>
+                            <small class="text-muted">💵 Se registra a la tasa BCV del día. El vuelto se calcula automáticamente.</small>
+                        </div>
+
+                        <div id="divFiado" style="display:none">
+                            <label class="form-label small">Nota / Fecha de pago</label>
+                            <input type="text" id="notaFiado" class="form-control mb-2" placeholder="Ej: Paga el viernes">
+                        </div>
+                    </div>
+
+                    <!-- MÉTODO 2 (solo visible en modo mixto) -->
+                    <div id="bloqueMetodo2" style="display:none;">
+                        <hr class="my-3">
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold">Método de pago 2</label>
+                            <select id="metodoPago2" class="form-select mb-2">
+                                <option value="">Seleccione</option>
+                                <option value="Efectivo Bs.">Efectivo Bs.</option>
+                                <option value="Pago Móvil">Pago Móvil</option>
+                                <option value="Punto de Venta">Punto de Venta</option>
+                            </select>
+
+                            <div id="divPagoMovil2" style="display:none">
+                                <label class="form-label small">Referencia / Teléfono</label>
+                                <input type="text" id="refPagoMovil2" class="form-control mb-2" minlength="4" maxlength="11">
+                                <label class="form-label small">Monto pagado (Bs.)</label>
+                                <input type="number" id="montoPagoMovil2" class="form-control mb-2" min="0" step="0.01">
+                            </div>
+                            <div id="divPuntoVenta2" style="display:none">
+                                <small class="text-muted">Pago por punto de venta.</small>
+                            </div>
+                            <div id="divEfectivo2" style="display:none">
+                                <label class="form-label small">Monto entregado (Bs.)</label>
+                                <input type="number" id="montoEfectivo2" class="form-control mb-2" min="0" step="0.01">
+                            </div>
+                        </div>
+
+                        <!-- Resumen del pago mixto -->
+                        <div class="alert alert-info py-2 mb-2">
+                            <div class="d-flex justify-content-between small">
+                                <span>Total a pagar:</span>
+                                <strong id="resumenTotalBs">Bs. 0.00</strong>
+                            </div>
+                            <div class="d-flex justify-content-between small">
+                                <span>Método 1:</span>
+                                <span id="resumenMetodo1">—</span>
+                            </div>
+                            <div class="d-flex justify-content-between small">
+                                <span>Método 2:</span>
+                                <span id="resumenMetodo2">—</span>
+                            </div>
+                            <hr class="my-1">
+                            <div class="d-flex justify-content-between small">
+                                <span><strong>Falta por cobrar:</strong></span>
+                                <strong id="resumenFalta" class="text-danger">Bs. 0.00</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btEnviar"
+                            class="btn btn-success w-100 mb-2"
+                            data-intro="<strong>✅ Registrar venta</strong><br><br>Cuando esté todo listo, haz clic aquí para guardar la venta.<br><br>El sistema descuenta el stock automáticamente."
+                            data-step="10">
+                        💾 Registrar Venta
+                    </button>
+                    <button id="btCancelarEdicion" class="btn btn-outline-secondary w-100" style="display:none;">Cancelar edición</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+        <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+            <span>📋 Ventas del día</span>
+            <button class="btn btn-sm btn-outline-primary" id="btnRefrescarVentas">Refrescar</button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0 tabla-movil">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th><th>Cliente</th><th>Cédula</th><th>Productos</th>
+                            <th>Total Bs.</th><th>Total $</th><th>Pago</th><th>Estado</th><th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVentasDia"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="tplCardProducto">
+    <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center p-3 d-flex flex-column">
+                <h6 class="card-title fw-bold mb-2" data-field="nombre"></h6>
+                <p class="mb-2 small text-muted" data-field="categoriaStock"></p>
+                <p class="precio-bs mb-3" data-field="precio"></p>
+                <button class="btn btn-primary btn-sm w-100 mt-auto btn-agregar">➕ Agregar</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="tplFilaCarrito">
+    <tr>
+        <td data-field="nombre"></td>
+        <td data-field="cantidad"></td>
+        <td data-field="subtotal"></td>
+        <td><button class="btn btn-sm btn-danger btn-eliminar">✕</button></td>
+    </tr>
+</template>
+
+<template id="tplFilaVentaDia">
+    <tr>
+        <td data-field="id" data-label="ID"></td>
+        <td data-field="nomCliente" data-label="Cliente"></td>
+        <td data-field="cedula" data-label="Cédula"></td>
+        <td data-label="Productos"><small data-field="productos"></small></td>
+        <td data-field="totalBs" data-label="Total Bs."></td>
+        <td data-field="totalUSD" data-label="Total $"></td>
+        <td data-field="metodoPago" data-label="Pago"></td>
+        <td data-field="estado" data-label="Estado"></td>
+        <td data-label="Acciones" class="d-flex gap-1 flex-wrap">
+            <button class="btn btn-sm btn-warning btn-editar">✏️ Editar</button>
+            <button class="btn btn-sm btn-danger btn-eliminar-venta">🗑️ Eliminar</button>
+        </td>
+    </tr>
+</template>
+
+<!-- Modal de cantidad con opción "Venta al mayor" -->
+<div class="modal fade" id="cantidadModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cantidadModalLabel">Agregar producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold" id="cantidadProdNombre"></p>
+
+                <div class="form-check mb-2 p-2 bg-warning bg-opacity-10 rounded">
+                    <input class="form-check-input" type="checkbox" id="inVentaMayor">
+                    <label class="form-check-label fw-bold" for="inVentaMayor">
+                        🏷️ Venta al mayor (precio referencial)
+                    </label>
+                </div>
+
+                <div id="divPrecioMayor" style="display:none;" class="mb-3">
+                    <label class="form-label small fw-bold">Precio al mayor ($)</label>
+                    <input type="number" id="inPrecioMayor" class="form-control" min="0.01" step="0.01" placeholder="0.00">
+                    <small class="text-muted">Este precio se usará solo para esta venta. No se guarda en el producto.</small>
+                </div>
+
+                <div id="cantidadTipoGramos">
+                    <label class="form-label">Cantidad en gramos</label>
+                    <input type="number" id="inCantidadGramos" class="form-control mb-2" min="1" step="1" placeholder="Ej: 200">
+                    <small class="text-muted">Precio por Kg: <span id="precioKgDisplay">$0.00</span></small>
+                </div>
+                <div id="cantidadTipoUnidad" style="display:none">
+                    <label class="form-label">Cantidad de unidades</label>
+                    <input type="number" id="inCantidadUnidades" class="form-control mb-2" min="1" step="1" value="1">
+                    <small class="text-muted">Precio unitario: <span id="precioUnidadDisplay">$0.00</span></small>
+                </div>
+                <div class="alert alert-info py-2 mb-0 mt-2">
+                    Subtotal estimado: <strong id="subtotalEstimado">Bs. 0.00</strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmarCantidad">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="vendedorAlertModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Aviso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="vendedorAlertModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+
+<script type="module">
+    import Cl_sSupabase from "./dist/services/Cl_sSupabase.js";
+    import Cl_cVendedor from "./dist/controllers/Cl_cVendedor.js";
+    import Cl_vVendedor from "./dist/views/Cl_vVendedor.js";
+
+    const opcionesTour = {
+        nextLabel: "Siguiente →",
+        prevLabel: "← Anterior",
+        doneLabel: "¡Listo! ✓",
+        skipLabel: "✕",
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        disableInteraction: true,
+        positionPrecedence: ["top", "bottom", "right", "left"],
+        scrollToElement: true,
+        scrollPadding: 80,
+        helperElementPadding: 6,
+    };
+
+    function iniciarTour() {
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        introJs().setOptions(opcionesTour)
+            .oncomplete(() => { document.body.style.overflow = originalOverflow || ""; })
+            .onexit(() => { document.body.style.overflow = originalOverflow || ""; })
+            .start();
+    }
+
+    document.getElementById("btnTourVendedor")?.addEventListener("click", iniciarTour);
+
+    if (!localStorage.getItem("tourVendedorVisto")) {
+        setTimeout(() => {
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+            introJs().setOptions(opcionesTour)
+                .oncomplete(() => {
+                    document.body.style.overflow = originalOverflow || "";
+                    localStorage.setItem("tourVendedorVisto", "1");
+                })
+                .onexit(() => {
+                    document.body.style.overflow = originalOverflow || "";
+                    localStorage.setItem("tourVendedorVisto", "1");
+                })
+                .start();
+        }, 1500);
+    }
+
+    async function guardia() {
+        const perfil = await Cl_sSupabase.getUsuarioActual();
+        if (!perfil) { window.location.replace("index.html"); return false; }
+        if (perfil.rol !== "vendedor" && perfil.rol !== "admin") {
+            window.location.replace("index.html");
+            return false;
+        }
+        return true;
+    }
+
+    const autorizado = await guardia();
+    if (!autorizado) throw new Error("Sin autorización");
+
+    window.addEventListener("pageshow", async () => {
+        const ok = await guardia();
+        if (!ok) window.location.replace("index.html");
+    });
+
+    document.addEventListener("visibilitychange", async () => {
+        if (document.visibilityState === "visible") await guardia();
+    });
+
+    document.getElementById("btnLogoutVendedor")?.addEventListener("click", async () => {
+        await Cl_sSupabase.logout();
+        window.location.replace("index.html");
+    });
+
+    const vista = new Cl_vVendedor();
+    new Cl_cVendedor(vista);
+</script>
+</body>
+</html>

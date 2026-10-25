@@ -1,0 +1,24 @@
+{
+  "name": "charcuteria",
+  "version": "1.0.0",
+  "description": "Sistema de ventas para charcutería con Supabase",
+  "main": "index.html",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "npx serve ."
+  },
+  "keywords": ["charcuteria", "ventas", "supabase"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
